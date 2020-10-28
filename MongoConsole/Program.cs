@@ -35,10 +35,31 @@ namespace MongoConsole
 
             collection.InsertOne(document);
 
-
+            // printing the first row in the list
             var firstDocument = collection.Find(new BsonDocument()).FirstOrDefault();
             Console.WriteLine(firstDocument.ToString());
+            
+            
+            // select all data (very slow)
 
+            //var allDocumentList = collection.Find(new BsonDocument()).ToList();
+            //foreach (BsonDocument x in allDocumentList)
+            //{
+            //    Console.WriteLine(x.ToString());
+            //}
+
+
+            var highExamScoreFilter = Builders<BsonDocument>.Filter.ElemMatch<BsonValue>(
+                                     "scores", new BsonDocument { { "type", "exam" },
+                                        { "score", new BsonDocument { { "$gte", 95 } } }
+                                     });
+
+
+            var filteredList = collection.Find(highExamScoreFilter).ToList();
+            foreach (BsonDocument x in filteredList)
+            {
+                Console.WriteLine(x.ToString());
+            }
 
 
             //foreach (var db in dbList)
