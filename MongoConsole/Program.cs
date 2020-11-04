@@ -17,9 +17,22 @@ namespace MongoConsole
 
             var dbList = dbClient.ListDatabases().ToList();
 
+
+            var databaseTest1 = dbClient.GetDatabase("test1");
+            var collectionTest1 = databaseTest1.GetCollection<BsonDocument>("test1collection");
+            var documentTest = new BsonDocument { { "user_id", 1 }, { "user_name", "moshe" }, { "user_family", "barnov" },{ "address", "jerusalem st 22" } };
+            collectionTest1.InsertOne(documentTest);
+
+
             Console.WriteLine("The list of databases on this server is: ");
 
             var database = dbClient.GetDatabase("sample_training");
+
+
+
+
+
+
             var collection = database.GetCollection<BsonDocument>("grades");
 
             var document = new BsonDocument { { "student_id", 10000 }, {
@@ -54,8 +67,9 @@ namespace MongoConsole
                                         { "score", new BsonDocument { { "$gte", 95 } } }
                                      });
 
+            var sort = Builders<BsonDocument>.Sort.Descending("student_id");
 
-            var filteredList = collection.Find(highExamScoreFilter).ToList();
+            var filteredList = collection.Find(highExamScoreFilter).Sort(sort).ToList();
             foreach (BsonDocument x in filteredList)
             {
                 Console.WriteLine(x.ToString());
