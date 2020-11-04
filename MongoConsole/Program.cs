@@ -19,6 +19,22 @@ namespace MongoConsole
 
 
             var databaseTest1 = dbClient.GetDatabase("test1");
+
+
+            List<User> dictUsers = new List<User>();
+            for (int i = 2; i < 12; i++)
+            {
+                var newDocument = new User { Id = i, UserAddress = "Street num " + i, UserFamily = "UserFamily_" + i, UserName = "UserName_" + i };
+                dictUsers.Add(newDocument);
+
+            }
+
+            var userCollection = databaseTest1.GetCollection<User>("userCollection");
+            userCollection.InsertMany(dictUsers);
+
+
+
+
             var collectionTest1 = databaseTest1.GetCollection<BsonDocument>("test1collection");
             var documentTest = new BsonDocument { { "user_id", 1 }, { "user_name", "moshe" }, { "user_family", "barnov" },{ "address", "jerusalem st 22" } };
             collectionTest1.InsertOne(documentTest);
@@ -34,6 +50,8 @@ namespace MongoConsole
             collectionTest1.InsertMany(dict);
 
 
+          
+
             Console.WriteLine("The list of databases on this server is: ");
 
             FieldDefinition<BsonDocument> fieldDefinition = "user_id";
@@ -41,7 +59,7 @@ namespace MongoConsole
 
 
 
-            var userBiggerFilter = Builders<BsonDocument>.Filter.Gte("user_id", 3);
+            var userBiggerFilter = Builders<BsonDocument>.Filter.Eq("user_id", 3);
                                      //fieldDefinition, fiterDefinition);
 
 
