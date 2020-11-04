@@ -23,8 +23,35 @@ namespace MongoConsole
             var documentTest = new BsonDocument { { "user_id", 1 }, { "user_name", "moshe" }, { "user_family", "barnov" },{ "address", "jerusalem st 22" } };
             collectionTest1.InsertOne(documentTest);
 
+            List<BsonDocument> dict = new List<BsonDocument>();
+
+            for (int i=2; i<12; i++)
+            {
+                var newDocument = new BsonDocument { { "user_id", i }, { "user_name", "user_" + i }, { "user_family", "family_" + i }, { "address", "jerusalem st 22" } };
+                dict.Add(newDocument);
+
+            }
+            collectionTest1.InsertMany(dict);
+
 
             Console.WriteLine("The list of databases on this server is: ");
+
+            FieldDefinition<BsonDocument> fieldDefinition = "user_id";
+            FilterDefinition<BsonValue> fiterDefinition = new BsonDocument( "$gte", 0 );
+
+
+
+            var userBiggerFilter = Builders<BsonDocument>.Filter.Gte("user_id", 3);
+                                     //fieldDefinition, fiterDefinition);
+
+
+            var filteredTempList = collectionTest1.Find(userBiggerFilter).ToList();
+            foreach (BsonDocument x in filteredTempList)
+            {
+                Console.WriteLine(x.ToString());
+            }
+
+
 
             var database = dbClient.GetDatabase("sample_training");
 
